@@ -51,22 +51,19 @@ public class Player : MonoBehaviour
 
         if (Input.GetButtonDown("Jump") && _jumpCount > 0)
          {
-            isGrounded = false;
             rb.velocity = new Vector2(rb.velocity.x, _jumpSpeed );
             _jumpCount--;
             fallTimer = 0;
             jumpTimer = 0;
         }
-        else if(Input.GetButton("Jump") && jumpTimer <= _maxJumpDuration && _jumpCount > 0)
+        else if(Input.GetButton("Jump") && jumpTimer <= _maxJumpDuration)
         {
-            isGrounded = false;
             rb.velocity = new Vector2(rb.velocity.x, _jumpSpeed);
             fallTimer = 0;
-            jumpTimer += Time.deltaTime;
         }
-        
+        jumpTimer += Time.deltaTime;
 
-        if (isGrounded)
+        if (isGrounded && fallTimer > 0 && rb.velocity.y == 0)
         {
             fallTimer = 0;
             _jumpCount = _maxJumps;
