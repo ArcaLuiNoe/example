@@ -2,12 +2,12 @@ using UnityEngine;
 
 public class Player : MonoBehaviour
 {
-    [SerializeField] float movementSpeed = 5f;
+    [SerializeField] float moveSpeed = 5f;
     [SerializeField] float jumpForce = 5f;
 
     void Update()
     {
-        var horizontal = Input.GetAxisRaw("Horizontal") * movementSpeed;
+        var horizontal = Input.GetAxisRaw("Horizontal") * moveSpeed;
         var rb = GetComponent<Rigidbody2D>();
         var animator = GetComponent<Animator>();
 
