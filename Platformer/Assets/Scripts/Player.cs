@@ -1,4 +1,5 @@
 using System;
+using Unity.VisualScripting;
 using UnityEngine;
 
 public class Player : MonoBehaviour
@@ -7,6 +8,7 @@ public class Player : MonoBehaviour
     [SerializeField] float _moveSpeed = 5f;
     [SerializeField] float _jumpForce = 5f;
     [SerializeField] int _maxJumps = 2;
+    [SerializeField] Transform _groundCheck;
 
     int _jumpCount;
 
@@ -23,9 +25,8 @@ public class Player : MonoBehaviour
         var animator = GetComponent<Animator>();
 
         if (Mathf.Abs(horizontal) >= 1)
-        { 
             rb.velocity = new Vector2(horizontal, rb.velocity.y);
-        }
+
 
         bool running = horizontal != 0;
         animator.SetBool("Run", running);
@@ -45,7 +46,10 @@ public class Player : MonoBehaviour
 
     void OnCollisionEnter2D(Collision2D collision)
     {
-        _jumpCount = _maxJumps;
+        var isGrounded = Physics2D.OverlapCircle(_groundCheck.position, 0.1f, LayerMask.GetMask("Ground"));
+        if (isGrounded != null)
+            _jumpCount = _maxJumps;
+
     }
 
     internal void ResetToStart()
