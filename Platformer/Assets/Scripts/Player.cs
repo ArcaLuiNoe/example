@@ -6,14 +6,17 @@ public class Player : MonoBehaviour
 {
     [SerializeField] float _moveSpeed = 5f;
     [SerializeField] float _jumpSpeed = 5f;
-    [SerializeField] int _maxJumps = 2;
     [SerializeField] float _fallingSpeed = 2f;
+    [SerializeField] float _maxJumpDuration = 0.1f;
+    [SerializeField] int _maxJumps = 2;
     [SerializeField] Transform _groundCheck;
 
     Vector2 _startPosition;
 
+    bool isGrounded;
     int _jumpCount;
-    float _fallTimer = 5;
+    float fallTimer = 5;
+    float jumpTimer;
 
     private void Start()
     {
@@ -24,7 +27,7 @@ public class Player : MonoBehaviour
     void Update()
     {
         var hit = Physics2D.OverlapCircle(_groundCheck.position, 0.1f, LayerMask.GetMask("Ground"));
-        bool isGrounded = hit != null;
+        isGrounded = hit != null;
 
         var horizontal = Input.GetAxisRaw("Horizontal") * _moveSpeed;
         var rb = GetComponent<Rigidbody2D>();
@@ -32,6 +35,9 @@ public class Player : MonoBehaviour
 
         if (Mathf.Abs(horizontal) >= 1)
             rb.velocity = new Vector2(horizontal, rb.velocity.y);
+        else if (Mathf.Abs(horizontal) == 0)
+            rb.velocity = new Vector2(0, rb.velocity.y);
+
 
 
         bool running = horizontal != 0;
@@ -44,21 +50,31 @@ public class Player : MonoBehaviour
         }
 
         if (Input.GetButtonDown("Jump") && _jumpCount > 0)
-        {
+         {
+            isGrounded = false;
             rb.velocity = new Vector2(rb.velocity.x, _jumpSpeed );
             _jumpCount--;
-            _fallTimer = 0;
+            fallTimer = 0;
+            jumpTimer = 0;
         }
+        else if(Input.GetButton("Jump") && jumpTimer <= _maxJumpDuration && _jumpCount > 0)
+        {
+            isGrounded = false;
+            rb.velocity = new Vector2(rb.velocity.x, _jumpSpeed);
+            fallTimer = 0;
+            jumpTimer += Time.deltaTime;
+        }
+        
 
         if (isGrounded)
         {
-            _fallTimer = 0;
+            fallTimer = 0;
             _jumpCount = _maxJumps;
         }
         else
         {
-            _fallTimer += Time.deltaTime;
-            var downForce = _fallingSpeed * _fallTimer * _fallTimer;
+            fallTimer += Time.deltaTime;
+            var downForce = _fallingSpeed * fallTimer * fallTimer;
             rb.velocity = new Vector2(rb.velocity.x, rb.velocity.y - downForce);
         }
     }
