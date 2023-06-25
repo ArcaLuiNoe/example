@@ -1,9 +1,16 @@
+using System;
 using UnityEngine;
 
 public class Player : MonoBehaviour
 {
+    Vector2 _startPosition;
     [SerializeField] float moveSpeed = 5f;
     [SerializeField] float jumpForce = 5f;
+
+    private void Start()
+    {
+        _startPosition = transform.position;
+    }
 
     void Update()
     {
@@ -29,5 +36,10 @@ public class Player : MonoBehaviour
         {
             rb.AddForce(Vector2.up * jumpForce);
         }
+    }
+
+    internal void ResetToStart()
+    {
+        transform.position = _startPosition;
     }
 }
