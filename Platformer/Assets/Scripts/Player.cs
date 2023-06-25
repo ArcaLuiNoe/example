@@ -4,17 +4,21 @@ using UnityEngine;
 public class Player : MonoBehaviour
 {
     Vector2 _startPosition;
-    [SerializeField] float moveSpeed = 5f;
-    [SerializeField] float jumpForce = 5f;
+    [SerializeField] float _moveSpeed = 5f;
+    [SerializeField] float _jumpForce = 5f;
+    [SerializeField] int _maxJumps = 2;
+
+    int _jumpCount;
 
     private void Start()
     {
         _startPosition = transform.position;
+        _jumpCount = _maxJumps;
     }
 
     void Update()
     {
-        var horizontal = Input.GetAxisRaw("Horizontal") * moveSpeed;
+        var horizontal = Input.GetAxisRaw("Horizontal") * _moveSpeed;
         var rb = GetComponent<Rigidbody2D>();
         var animator = GetComponent<Animator>();
 
@@ -32,10 +36,16 @@ public class Player : MonoBehaviour
             spriteRenderer.flipX = horizontal < 0;
         }
 
-        if (Input.GetButton("Jump"))
+        if (Input.GetButtonDown("Jump") && _jumpCount > 0)
         {
-            rb.AddForce(Vector2.up * jumpForce);
+            rb.AddForce(Vector2.up * _jumpForce);
+            _jumpCount--;
         }
+    }
+
+    void OnCollisionEnter2D(Collision2D collision)
+    {
+        _jumpCount = _maxJumps;
     }
 
     internal void ResetToStart()
