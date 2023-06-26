@@ -1,5 +1,3 @@
-using System;
-using Unity.VisualScripting;
 using UnityEngine;
 
 public class Player : MonoBehaviour
@@ -58,7 +56,7 @@ public class Player : MonoBehaviour
         }
     }
 
-    void LongJump()
+     void LongJump()
     {
         _rb.velocity = new Vector2(_rb.velocity.x, _jumpSpeed);
         _fallTimer = 0;
