@@ -59,7 +59,7 @@ public class Player : MonoBehaviour
             _fallTimer = 0;
             _jumpCount = _maxJumps;
         }
-        else
+        else if (!_isGrounded)
         {
             _fallTimer += Time.deltaTime;
             var downForce = _fallingSpeed * _fallTimer * _fallTimer;
@@ -93,7 +93,7 @@ public class Player : MonoBehaviour
 
     void SlipHorizontal()
     {
-        var desiredVelocity = new Vector2(_horizontal, _rb.velocity.y);
+        var desiredVelocity = new Vector2(_horizontal * _moveSpeed / 2, _rb.velocity.y);
         var smoothedVelocity = Vector2.Lerp(_rb.velocity, desiredVelocity, Time.deltaTime / _slipFactor);
         _rb.velocity = smoothedVelocity;
     }
