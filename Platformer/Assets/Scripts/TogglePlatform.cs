@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -5,18 +6,38 @@ using UnityEngine.Events;
 
 public class TogglePlatform : MonoBehaviour
 {
-    [SerializeField] Sprite _downSprite;
-    [SerializeField] UnityEvent _onEnter;
+    [SerializeField] Sprite _pressedSprite;
+    [SerializeField] UnityEvent _onPress;
+    [SerializeField] UnityEvent _onRelease;
 
-    private void OnTriggerEnter2D(Collider2D collision)
+    SpriteRenderer _spriteRenderer;
+    Sprite _releasedSprite;
+
+    void Awake()
+    {
+        _spriteRenderer = GetComponent<SpriteRenderer>();
+        _releasedSprite = _spriteRenderer.sprite;    
+        
+        BecomeReleased();
+    }
+
+    void OnTriggerEnter2D(Collider2D collision)
     {
         var player = collision.GetComponent<Player>();
         if (player == null)
             return;
+        BecomePressed();
+    }
 
-        var spriteRenderer = GetComponent<SpriteRenderer>();
-        spriteRenderer.sprite = _downSprite;
+    void BecomePressed()
+    {
+        _spriteRenderer.sprite = _pressedSprite;
+        _onPress?.Invoke();
+    }
 
-        _onEnter?.Invoke();
+    void BecomeReleased()
+    {
+        _spriteRenderer.sprite = _releasedSprite;
+        _onRelease?.Invoke();
     }
 }
