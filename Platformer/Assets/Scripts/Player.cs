@@ -2,12 +2,15 @@ using UnityEngine;
 
 public class Player : MonoBehaviour
 {
+    [SerializeField] Transform _groundCheck;
+    [Header("Moving")]
     [SerializeField] float _moveSpeed = 5f;
+    [SerializeField] float _slipFactor = 1f;
+    [Header("Jumping")]
     [SerializeField] float _jumpSpeed = 5f;
     [SerializeField] float _fallingSpeed = 2f;
     [SerializeField] float _maxJumpDuration = 0.1f;
     [SerializeField] int _maxJumps = 2;
-    [SerializeField] Transform _groundCheck;
 
     Vector2 _startPosition;
     Rigidbody2D _rb;
@@ -18,6 +21,7 @@ public class Player : MonoBehaviour
     float _jumpTimer;
     float _horizontal;
     bool _isGrounded;
+    bool _isSlipping;
 
     private void Start()
     {
@@ -31,9 +35,16 @@ public class Player : MonoBehaviour
     void Update()
     {
         CheckIfGrounded();
+
         ReadMoveHorizontal();
-        MoveHorizontal();
+
+        if(_isSlipping)
+            SlipHorizontal();
+        else
+            MoveHorizontal();
+
         AnimateRunning();
+
         FlipSprite();
 
         if (ShouldJump())
@@ -56,7 +67,7 @@ public class Player : MonoBehaviour
         }
     }
 
-     void LongJump()
+    void LongJump()
     {
         _rb.velocity = new Vector2(_rb.velocity.x, _jumpSpeed);
         _fallTimer = 0;
@@ -80,12 +91,16 @@ public class Player : MonoBehaviour
         return Input.GetButtonDown("Jump") && _jumpCount > 0;
     }
 
+    void SlipHorizontal()
+    {
+        var desiredVelocity = new Vector2(_horizontal, _rb.velocity.y);
+        var smoothedVelocity = Vector2.Lerp(_rb.velocity, desiredVelocity, Time.deltaTime / _slipFactor);
+        _rb.velocity = smoothedVelocity;
+    }
+
     void MoveHorizontal()
     {
-        if (Mathf.Abs(_horizontal) >= 1)
-            _rb.velocity = new Vector2(_horizontal, _rb.velocity.y);
-        else if (Mathf.Abs(_horizontal) == 0)
-            _rb.velocity = new Vector2(0, _rb.velocity.y);
+        _rb.velocity = new Vector2(_horizontal, _rb.velocity.y);
     }
 
     void ReadMoveHorizontal()
@@ -106,9 +121,12 @@ public class Player : MonoBehaviour
     }
 
     void CheckIfGrounded()
-    {
+    {        
         var hit = Physics2D.OverlapCircle(_groundCheck.position, 0.1f, LayerMask.GetMask("Ground"));
         _isGrounded = hit != null;
+
+        // "hit?" = if hit != null then compare tag ||||||| "??" = otherwise if hit == null then do what is after ??, so = false
+        _isSlipping = hit?.CompareTag("Slippery") ?? false; 
     }
 
     internal void ResetToStart()

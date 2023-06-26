@@ -530,11 +530,6 @@ SpriteRenderer:
   m_WasSpriteAssigned: 1
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
---- !u!4 &365031179 stripped
-Transform:
-  m_CorrespondingSourceObject: {fileID: 7246286845913852945, guid: 5a1283c6ede347649ba2d46549b70caa, type: 3}
-  m_PrefabInstance: {fileID: 2259701209562507992}
-  m_PrefabAsset: {fileID: 0}
 --- !u!1 &385531471
 GameObject:
   m_ObjectHideFlags: 0
@@ -2268,9 +2263,9 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
-  - {fileID: 365031179}
   - {fileID: 355198198}
   - {fileID: 1990955740}
+  - {fileID: 2259701209562507993}
   m_Father: {fileID: 660666801}
   m_RootOrder: -1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -3089,10 +3084,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ba853f752fc87b34e87d411a0685f2a3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _moveSpeed: 5
-  _jumpSpeed: 8
+  _moveSpeed: 6.5
+  _jumpSpeed: 6
   _fallingSpeed: 0.1
-  _maxJumpDuration: 0.3
+  _maxJumpDuration: 0.15
   _maxJumps: 2
   _groundCheck: {fileID: 232627530}
 --- !u!50 &2073639850
@@ -3351,3 +3346,8 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 5a1283c6ede347649ba2d46549b70caa, type: 3}
+--- !u!4 &2259701209562507993 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 2766850606890632813, guid: 5a1283c6ede347649ba2d46549b70caa, type: 3}
+  m_PrefabInstance: {fileID: 2259701209562507992}
+  m_PrefabAsset: {fileID: 0}
