@@ -12,68 +12,105 @@ public class Player : MonoBehaviour
     [SerializeField] Transform _groundCheck;
 
     Vector2 _startPosition;
-
-    bool isGrounded;
+    Rigidbody2D _rb;
+    Animator _animator;
+    SpriteRenderer _spriteRenderer;
     int _jumpCount;
-    float fallTimer = 5;
-    float jumpTimer;
+    float _fallTimer = 5;
+    float _jumpTimer;
+    float _horizontal;
+    bool _isGrounded;
 
     private void Start()
     {
         _startPosition = transform.position;
         _jumpCount = _maxJumps;
+        _rb = GetComponent<Rigidbody2D>();
+        _animator = GetComponent<Animator>();
+        _spriteRenderer = GetComponent<SpriteRenderer>();
     }
 
     void Update()
     {
-        var hit = Physics2D.OverlapCircle(_groundCheck.position, 0.1f, LayerMask.GetMask("Ground"));
-        isGrounded = hit != null;
+        CheckIfGrounded();
+        ReadMoveHorizontal();
+        MoveHorizontal();
+        AnimateRunning();
+        FlipSprite();
 
-        var horizontal = Input.GetAxisRaw("Horizontal") * _moveSpeed;
-        var rb = GetComponent<Rigidbody2D>();
-        var animator = GetComponent<Animator>();
+        if (ShouldJump())
+            Jump();
+        else if (ShouldLongJump())
+            LongJump();
 
-        if (Mathf.Abs(horizontal) >= 1)
-            rb.velocity = new Vector2(horizontal, rb.velocity.y);
-        else if (Mathf.Abs(horizontal) == 0)
-            rb.velocity = new Vector2(0, rb.velocity.y);
+        _jumpTimer += Time.deltaTime;
 
-
-
-        bool running = horizontal != 0;
-        animator.SetBool("Run", running);
-
-        if (horizontal != 0)
+        if (_isGrounded && _fallTimer > 0 && _rb.velocity.y == 0)
         {
-            var spriteRenderer = GetComponent<SpriteRenderer>();
-            spriteRenderer.flipX = horizontal < 0;
-        }
-
-        if (Input.GetButtonDown("Jump") && _jumpCount > 0)
-         {
-            rb.velocity = new Vector2(rb.velocity.x, _jumpSpeed );
-            _jumpCount--;
-            fallTimer = 0;
-            jumpTimer = 0;
-        }
-        else if(Input.GetButton("Jump") && jumpTimer <= _maxJumpDuration)
-        {
-            rb.velocity = new Vector2(rb.velocity.x, _jumpSpeed);
-            fallTimer = 0;
-        }
-        jumpTimer += Time.deltaTime;
-
-        if (isGrounded && fallTimer > 0 && rb.velocity.y == 0)
-        {
-            fallTimer = 0;
+            _fallTimer = 0;
             _jumpCount = _maxJumps;
         }
         else
         {
-            fallTimer += Time.deltaTime;
-            var downForce = _fallingSpeed * fallTimer * fallTimer;
-            rb.velocity = new Vector2(rb.velocity.x, rb.velocity.y - downForce);
+            _fallTimer += Time.deltaTime;
+            var downForce = _fallingSpeed * _fallTimer * _fallTimer;
+            _rb.velocity = new Vector2(_rb.velocity.x, _rb.velocity.y - downForce);
         }
+    }
+
+    void LongJump()
+    {
+        _rb.velocity = new Vector2(_rb.velocity.x, _jumpSpeed);
+        _fallTimer = 0;
+    }
+
+    bool ShouldLongJump()
+    {
+        return Input.GetButton("Jump") && _jumpTimer <= _maxJumpDuration;
+    }
+
+    void Jump()
+    {
+        _rb.velocity = new Vector2(_rb.velocity.x, _jumpSpeed);
+        _jumpCount--;
+        _fallTimer = 0;
+        _jumpTimer = 0;
+    }
+
+    bool ShouldJump()
+    {
+        return Input.GetButtonDown("Jump") && _jumpCount > 0;
+    }
+
+    void MoveHorizontal()
+    {
+        if (Mathf.Abs(_horizontal) >= 1)
+            _rb.velocity = new Vector2(_horizontal, _rb.velocity.y);
+        else if (Mathf.Abs(_horizontal) == 0)
+            _rb.velocity = new Vector2(0, _rb.velocity.y);
+    }
+
+    void ReadMoveHorizontal()
+    {
+        _horizontal = Input.GetAxisRaw("Horizontal") * _moveSpeed;
+    }
+
+    void FlipSprite()
+    {
+        if (_horizontal != 0)
+            _spriteRenderer.flipX = _horizontal < 0;
+    }
+
+    void AnimateRunning()
+    {
+        bool running = _horizontal != 0;
+        _animator.SetBool("Run", running);
+    }
+
+    void CheckIfGrounded()
+    {
+        var hit = Physics2D.OverlapCircle(_groundCheck.position, 0.1f, LayerMask.GetMask("Ground"));
+        _isGrounded = hit != null;
     }
 
     internal void ResetToStart()
