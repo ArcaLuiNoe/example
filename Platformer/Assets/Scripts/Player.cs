@@ -124,7 +124,6 @@ public class Player : MonoBehaviour
     {        
         var hit = Physics2D.OverlapCircle(_groundCheck.position, 0.1f, LayerMask.GetMask("Ground"));
         _isGrounded = hit != null;
-
         // "hit?" = if hit != null then compare tag ||||||| "??" = otherwise if hit == null then do what is after ??, so = false
         _isSlipping = hit?.CompareTag("Slippery") ?? false; 
     }
