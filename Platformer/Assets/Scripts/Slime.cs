@@ -1,26 +1,31 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using Unity.VisualScripting;
 using UnityEngine;
 
 public class Slime : MonoBehaviour
 {
     [SerializeField] Transform _leftSensor;
     [SerializeField] Transform _rightSensor;
+    [SerializeField] Sprite _deadSprite;
 
     Rigidbody2D _rb;
     SpriteRenderer _sprite;
     float _direction = -1;
+    bool _isAlive;
 
     void Start()
     {
+        _isAlive = true;
         _rb = GetComponent<Rigidbody2D>();
         _sprite = GetComponent<SpriteRenderer>();
     }
 
     void Update()
     {
-        _rb.velocity = new Vector2(_direction, _rb.velocity.y);
+        if (_isAlive)
+            _rb.velocity = new Vector2(_direction, _rb.velocity.y);
 
         if (_direction < 0)
             ScanSensor(_leftSensor);
@@ -54,6 +59,30 @@ public class Slime : MonoBehaviour
         if (player == null)
             return;
 
-        player.ResetToStart();
+        Vector2 normal = collision.GetContact(0).normal;
+        if (normal.y <= -0.30)
+        {
+            StartCoroutine(Die());
+        }
+        else
+            player.ResetToStart();
+    }
+
+    IEnumerator Die()
+    {
+        _isAlive = false;
+        _sprite.sprite = _deadSprite;
+        GetComponent<Animator>().enabled = false;
+        GetComponent<Rigidbody2D>().simulated = false;
+
+        float alpha = 1;
+
+        while (alpha > 0)
+        {
+            yield return null;
+            alpha -= Time.deltaTime / 2;
+            _sprite.color = new Color(1, 1, 1, alpha);
+            Destroy(gameObject, 2f);
+        }
     }
 }
