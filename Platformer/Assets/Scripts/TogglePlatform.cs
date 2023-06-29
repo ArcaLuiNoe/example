@@ -9,6 +9,7 @@ public class TogglePlatform : MonoBehaviour
     [SerializeField] Sprite _pressedSprite;
     [SerializeField] UnityEvent _onPress;
     [SerializeField] UnityEvent _onRelease;
+    [SerializeField] int _playerNumber = 1;
 
     SpriteRenderer _spriteRenderer;
     Sprite _releasedSprite;
@@ -24,7 +25,7 @@ public class TogglePlatform : MonoBehaviour
     void OnTriggerEnter2D(Collider2D collision)
     {
         var player = collision.GetComponent<Player>();
-        if (player == null)
+        if (player == null || player.PlayerNumber != _playerNumber)
             return;
         BecomePressed();
     }

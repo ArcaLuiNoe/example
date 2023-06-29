@@ -2,6 +2,7 @@ using UnityEngine;
 
 public class Player : MonoBehaviour
 {
+    [SerializeField] int _playerNumber = 1;
     [SerializeField] Transform _groundCheck;
     [Header("Moving")]
     [SerializeField] float _moveSpeed = 5f;
@@ -11,17 +12,20 @@ public class Player : MonoBehaviour
     [SerializeField] float _fallingSpeed = 2f;
     [SerializeField] float _maxJumpDuration = 0.1f;
     [SerializeField] int _maxJumps = 2;
+    [SerializeField] Sprite _jumpSprite;
 
     Vector2 _startPosition;
     Rigidbody2D _rb;
     Animator _animator;
     SpriteRenderer _spriteRenderer;
     int _jumpCount;
-    float _fallTimer = 5;
+    public float _fallTimer = 5;
     float _jumpTimer;
     float _horizontal;
     bool _isGrounded;
     bool _isSlipping;
+
+    public int PlayerNumber => _playerNumber;
 
     private void Start()
     {
@@ -38,7 +42,7 @@ public class Player : MonoBehaviour
 
         ReadMoveHorizontal();
 
-        if(_isSlipping)
+        if (_isSlipping)
             SlipHorizontal();
         else
             MoveHorizontal();
@@ -56,6 +60,7 @@ public class Player : MonoBehaviour
 
         if (_isGrounded && _fallTimer > 0 && _rb.velocity.y == 0)
         {
+            _animator.SetBool("IsJumping", false);
             _fallTimer = 0;
             _jumpCount = _maxJumps;
         }
@@ -67,28 +72,30 @@ public class Player : MonoBehaviour
         }
     }
 
-    void LongJump()
+    bool ShouldJump()
     {
-        _rb.velocity = new Vector2(_rb.velocity.x, _jumpSpeed);
-        _fallTimer = 0;
-    }
-
-    bool ShouldLongJump()
-    {
-        return Input.GetButton("Jump") && _jumpTimer <= _maxJumpDuration;
+        return Input.GetButtonDown($"P{_playerNumber}Jump") && _jumpCount > 0;
     }
 
     void Jump()
     {
+        _animator.SetBool("IsJumping", true);
         _rb.velocity = new Vector2(_rb.velocity.x, _jumpSpeed);
         _jumpCount--;
         _fallTimer = 0;
         _jumpTimer = 0;
     }
 
-    bool ShouldJump()
+    bool ShouldLongJump()
     {
-        return Input.GetButtonDown("Jump") && _jumpCount > 0;
+        return Input.GetButton($"P{_playerNumber}Jump") && _jumpTimer <= _maxJumpDuration;
+    }
+
+    void LongJump()
+    {
+        _animator.SetBool("IsJumping", true);
+        _rb.velocity = new Vector2(_rb.velocity.x, _jumpSpeed);
+        _fallTimer = 0;
     }
 
     void SlipHorizontal()
@@ -105,7 +112,7 @@ public class Player : MonoBehaviour
 
     void ReadMoveHorizontal()
     {
-        _horizontal = Input.GetAxisRaw("Horizontal") * _moveSpeed;
+        _horizontal = Input.GetAxisRaw($"P{_playerNumber}Horizontal") * _moveSpeed;
     }
 
     void FlipSprite()
@@ -121,11 +128,11 @@ public class Player : MonoBehaviour
     }
 
     void CheckIfGrounded()
-    {        
+    {
         var hit = Physics2D.OverlapCircle(_groundCheck.position, 0.1f, LayerMask.GetMask("Ground"));
         _isGrounded = hit != null;
         // "hit?" = if hit != null then compare tag ||||||| "??" = otherwise if hit == null then do what is after ??, so = false
-        _isSlipping = hit?.CompareTag("Slippery") ?? false; 
+        _isSlipping = hit?.CompareTag("Slippery") ?? false;
     }
 
     internal void ResetToStart()

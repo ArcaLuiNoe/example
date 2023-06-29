@@ -6,8 +6,9 @@ public class KillOnEnter : MonoBehaviour
     {
         var player = collision.GetComponent<Player>();
         if (player != null)
-            player.ResetToStart();
-
+        {
+            player._fallTimer = 0;
+            player.transform.position = new Vector2(-11, -0.06f);
+        }
     }
-     
 }
