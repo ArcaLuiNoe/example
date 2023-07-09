@@ -1,3 +1,4 @@
+using Unity.VisualScripting;
 using UnityEngine;
 
 public class Player : MonoBehaviour
@@ -47,20 +48,20 @@ public class Player : MonoBehaviour
         else
             MoveHorizontal();
 
-        AnimateRunning();
+        UpdateAnimator();
 
         FlipSprite();
 
         if (ShouldJump())
             Jump();
-        else if (ShouldLongJump())
+        else if (ShouldContinueJump())
             LongJump();
 
         _jumpTimer += Time.deltaTime;
 
         if (_isGrounded && _fallTimer > 0 && _rb.velocity.y == 0)
         {
-            _animator.SetBool("IsJumping", false);
+           
             _fallTimer = 0;
             _jumpCount = _maxJumps;
         }
@@ -79,21 +80,20 @@ public class Player : MonoBehaviour
 
     void Jump()
     {
-        _animator.SetBool("IsJumping", true);
         _rb.velocity = new Vector2(_rb.velocity.x, _jumpSpeed);
         _jumpCount--;
         _fallTimer = 0;
         _jumpTimer = 0;
     }
 
-    bool ShouldLongJump()
+    bool ShouldContinueJump()
     {
         return Input.GetButton($"P{_playerNumber}Jump") && _jumpTimer <= _maxJumpDuration;
     }
 
     void LongJump()
     {
-        _animator.SetBool("IsJumping", true);
+
         _rb.velocity = new Vector2(_rb.velocity.x, _jumpSpeed);
         _fallTimer = 0;
     }
@@ -121,10 +121,11 @@ public class Player : MonoBehaviour
             _spriteRenderer.flipX = _horizontal < 0;
     }
 
-    void AnimateRunning()
+    void UpdateAnimator()
     {
         bool running = _horizontal != 0;
         _animator.SetBool("Run", running);
+        _animator.SetBool("Jump", ShouldContinueJump());
     }
 
     void CheckIfGrounded()
