@@ -27,6 +27,6 @@ public class TeleportFlag : MonoBehaviour
             return;
 
         _spriteRenderer.sprite = _downSprite;
-        flag.transform.position = new Vector3(9f, 20.8f, 0);
+        flag.transform.position = new Vector3(6.25f, 21.8f, 0);
     }
 }

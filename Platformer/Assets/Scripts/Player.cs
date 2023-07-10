@@ -1,3 +1,4 @@
+using System;
 using Unity.VisualScripting;
 using UnityEngine;
 
@@ -39,6 +40,9 @@ public class Player : MonoBehaviour
 
     void Update()
     {
+        if(_groundCheck.transform.position.y <= -10)
+            ResetToStart();
+
         CheckIfGrounded();
 
         ReadMoveHorizontal();
@@ -138,6 +142,13 @@ public class Player : MonoBehaviour
 
     internal void ResetToStart()
     {
-        transform.position = _startPosition;
+        _rb.velocity = Vector2.zero;
+        _rb.position = _startPosition;
+    }
+
+    internal void TeleportTo(Vector3 position)
+    {
+        _rb.position = position;
+        _rb.velocity = Vector2.zero;
     }
 }

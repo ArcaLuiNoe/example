@@ -8,7 +8,7 @@ public class KillOnEnter : MonoBehaviour
         if (player != null)
         {
             player._fallTimer = 0;
-            player.transform.position = new Vector2(-11, -0.06f);
+            player.ResetToStart();
         }
     }
 }
