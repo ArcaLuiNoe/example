@@ -6,17 +6,23 @@ using UnityEngine;
 
 public class FallingPlatform : MonoBehaviour
 {
-    public bool PlayerInside;
+    [SerializeField] float _fallSpeed = 12f;
+    [Range(0.1f, 5f)][SerializeField] float fallAfterSeconds = 3f;
+    [Range(0.005f, 0.1f)][SerializeField] float shakeX = 0.05f;
+    [Range(0.005f, 0.1f)][SerializeField] float shakeY = 0.05f;
+    [Tooltip("Reset the wiggle timer when no player is standing on the platform")]
+    [SerializeField] bool _resetOnEmpty;
 
     HashSet<Player> _playersInTrigger = new HashSet<Player>();
     Coroutine _coroutine;
     Vector3 _initialPosition;
+    public bool PlayerInside;
 
-    [SerializeField] float fallSpeed = 3f;
+
     bool _isFalling;
     float wiggleTimer = 0f;
-
     float fallTimer = 0f;
+
     void Start()
     {
         _initialPosition = transform.position;
@@ -39,10 +45,10 @@ public class FallingPlatform : MonoBehaviour
     {
         yield return new WaitForSeconds(0.25f);
 
-        while (wiggleTimer < 1f)
+        while (wiggleTimer < fallAfterSeconds)
         {
-            float randomX = UnityEngine.Random.Range(-0.05f, 0.05f);
-            float randomY = UnityEngine.Random.Range(-0.05f, 0.05f);
+            float randomX = UnityEngine.Random.Range(-shakeX, shakeX);
+            float randomY = UnityEngine.Random.Range(-shakeY, shakeY);
             transform.position = _initialPosition + new Vector3(randomX, randomY);
             float randomDelay = UnityEngine.Random.Range(0.005f, 0.01f);
             yield return new WaitForSeconds(randomDelay);
@@ -55,7 +61,7 @@ public class FallingPlatform : MonoBehaviour
 
         while (fallTimer < 0.25f)
         {
-            transform.position += Vector3.down * Time.deltaTime * fallSpeed;
+            transform.position += Vector3.down * Time.deltaTime * _fallSpeed;
             fallTimer += Time.deltaTime;
             yield return null;
         }
@@ -78,6 +84,9 @@ public class FallingPlatform : MonoBehaviour
         {
             PlayerInside = false;
             StopCoroutine(_coroutine);
+
+            if (_resetOnEmpty)
+                wiggleTimer = 0;
         }
     }
 }
