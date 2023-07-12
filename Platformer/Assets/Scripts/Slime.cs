@@ -1,7 +1,4 @@
-using System;
 using System.Collections;
-using System.Collections.Generic;
-using Unity.VisualScripting;
 using UnityEngine;
 
 public class Slime : MonoBehaviour
@@ -60,7 +57,7 @@ public class Slime : MonoBehaviour
             return;
 
         Vector2 normal = collision.GetContact(0).normal;
-        if (normal.y <= -0.30)
+        if (normal.y <= -0.5)
         {
             StartCoroutine(Die());
         }

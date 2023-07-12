@@ -1,5 +1,3 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 public class Door : MonoBehaviour
@@ -9,14 +7,17 @@ public class Door : MonoBehaviour
     
     [SerializeField] SpriteRenderer _rendererMid;
     [SerializeField] SpriteRenderer _rendererTop;
-    [SerializeField] int _requiredCoins = 3;
     [SerializeField] Door _exit;
+    [SerializeField] Canvas _canvas;
 
+    public static int _requiredCoins = 3;
     bool _open;
 
     [ContextMenu("Open Door")]
     void Open()
     {
+        if (_canvas != null)
+            _canvas.enabled = false;
         _open = true;
         _rendererMid.sprite = _openMid;
         _rendererTop.sprite = _openTop;
@@ -24,7 +25,7 @@ public class Door : MonoBehaviour
 
     void Update()
     {
-        if (_open == false && Coin.CoinsColected >= _requiredCoins)
+        if (_open == false && Coin.coinsColected >= _requiredCoins)
             Open();
     }
 

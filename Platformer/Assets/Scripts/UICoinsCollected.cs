@@ -1,9 +1,5 @@
-using System.Collections;
-using System.Collections.Generic;
 using TMPro;
-using TMPro.EditorUtilities;
 using UnityEngine;
-using UnityEngine.UI;
 
 public class UICoinsCollected : MonoBehaviour
 {
@@ -16,6 +12,6 @@ public class UICoinsCollected : MonoBehaviour
 
     void Update()
     {
-        _text.text = Coin.CoinsColected.ToString();
+        _text.SetText(Coin.coinsColected.ToString());
     }
 }
