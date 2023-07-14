@@ -38,7 +38,7 @@ public class Player : MonoBehaviour
 
     void Update()
     {
-        if(_groundCheck.transform.position.y <= -10)
+        if(_groundCheck.transform.position.y <= -25)
             ResetToStart();
 
         CheckIfGrounded();
