@@ -7,8 +7,17 @@ public class KillOnEnter : MonoBehaviour
         var player = collision.GetComponent<Player>();
         if (player != null)
         {
-            player._fallTimer = 0;
+            player.ResetToStart();
+        }
+    }
+
+    void OnParticleCollision(GameObject other)
+    {
+        var player = other.GetComponent<Player>();
+        if (player != null)
+        {
             player.ResetToStart();
         }
     }
 }
+
