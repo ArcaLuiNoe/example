@@ -24,11 +24,17 @@ public class Player : MonoBehaviour
     float _horizontal;
     bool _isGrounded;
     bool _isSlipping;
+    string _jumpButton;
+    string _horizontalAxis;
+    int _groundMask;
 
     public int PlayerNumber => _playerNumber;
 
     private void Start()
     {
+        _groundMask = LayerMask.GetMask("Ground");
+        _horizontalAxis = $"P{_playerNumber}Horizontal";
+        _jumpButton = $"P{_playerNumber}Jump";
         _startPosition = transform.position;
         _jumpCount = _maxJumps;
         _rb = GetComponent<Rigidbody2D>();
@@ -77,7 +83,7 @@ public class Player : MonoBehaviour
 
     bool ShouldJump()
     {
-        return Input.GetButtonDown($"P{_playerNumber}Jump") && _jumpCount > 0;
+        return Input.GetButtonDown(_jumpButton) && _jumpCount > 0;
     }
 
     void Jump()
@@ -90,7 +96,7 @@ public class Player : MonoBehaviour
 
     bool ShouldContinueJump()
     {
-        return Input.GetButton($"P{_playerNumber}Jump") && _jumpTimer <= _maxJumpDuration;
+        return Input.GetButton(_jumpButton) && _jumpTimer <= _maxJumpDuration;
     }
 
     void LongJump()
@@ -114,7 +120,7 @@ public class Player : MonoBehaviour
 
     void ReadMoveHorizontal()
     {
-        _horizontal = Input.GetAxisRaw($"P{_playerNumber}Horizontal") * _moveSpeed;
+        _horizontal = Input.GetAxisRaw(_horizontalAxis) * _moveSpeed;
     }
 
     void FlipSprite()
@@ -132,7 +138,7 @@ public class Player : MonoBehaviour
 
     void CheckIfGrounded()
     {
-        var hit = Physics2D.OverlapCircle(_groundCheck.position, 0.1f, LayerMask.GetMask("Ground"));
+        var hit = Physics2D.OverlapCircle(_groundCheck.position, 0.1f, _groundMask);
         _isGrounded = hit != null;
         // "hit?" = if hit != null then compare tag ||||||| "??" = otherwise if hit == null then do what is after ??, so = false
         _isSlipping = hit?.CompareTag("Slippery") ?? false;
