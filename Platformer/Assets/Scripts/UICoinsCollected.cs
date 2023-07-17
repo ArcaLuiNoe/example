@@ -1,3 +1,4 @@
+using System;
 using TMPro;
 using UnityEngine;
 
@@ -10,8 +11,8 @@ public class UICoinsCollected : MonoBehaviour
         _text = GetComponent<TMP_Text>();
     }
 
-    void Update()
+    public void UpdateCoinsUI(int _coinsCollected)
     {
-        _text.SetText(Coin.coinsColected.ToString());
+        _text.SetText(_coinsCollected.ToString());
     }
 }

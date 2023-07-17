@@ -1,9 +1,16 @@
+using System;
 using System.Collections;
 using UnityEngine;
 
 public class Coin : MonoBehaviour
 {
-    public static int coinsColected;
+    public static int coinsCollected = 1;
+    UICoinsCollected _uiCoinsCollected;
+
+    void Start()
+    {
+        _uiCoinsCollected = GameObject.Find("Coins Collected Text").GetComponent<UICoinsCollected>();
+    }
 
     void OnTriggerEnter2D(Collider2D collision)
     {
@@ -11,7 +18,8 @@ public class Coin : MonoBehaviour
         if (player == null )
             return;
 
+        
         gameObject.SetActive(false);
-        coinsColected++;
+        _uiCoinsCollected.UpdateCoinsUI(coinsCollected++);
     }
 }
