@@ -13,12 +13,12 @@ public class Player : MonoBehaviour
     [SerializeField] float _maxJumpDuration = 0.1f;
     [SerializeField] int _maxJumps = 2;
     [SerializeField] Sprite _jumpSprite;
+    public int _jumpCount;
 
     Vector2 _startPosition;
     Rigidbody2D _rb;
     Animator _animator;
     SpriteRenderer _spriteRenderer;
-    int _jumpCount;
     public float _fallTimer = 5;
     float _jumpTimer;
     float _horizontal;
@@ -44,7 +44,7 @@ public class Player : MonoBehaviour
 
     void Update()
     {
-        if(_groundCheck.transform.position.y <= -25)
+        if (_groundCheck.transform.position.y <= -25)
             ResetToStart();
 
         CheckIfGrounded();
@@ -69,7 +69,6 @@ public class Player : MonoBehaviour
 
         if (_isGrounded && _fallTimer > 0 && _rb.velocity.y == 0)
         {
-           
             _fallTimer = 0;
             _jumpCount = _maxJumps;
         }
@@ -101,7 +100,6 @@ public class Player : MonoBehaviour
 
     void LongJump()
     {
-
         _rb.velocity = new Vector2(_rb.velocity.x, _jumpSpeed);
         _fallTimer = 0;
     }

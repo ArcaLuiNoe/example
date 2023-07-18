@@ -8,7 +8,7 @@ using System;
 
 public class Collector : MonoBehaviour
 {
-	[SerializeField] List<Collectible> _collectibles;
+    [SerializeField] List<Collectible> _collectibles;
     [SerializeField] UnityEvent _onCollectionComplete;
 
     int _countRemaining;
@@ -21,7 +21,7 @@ public class Collector : MonoBehaviour
         _remainingText = GetComponentInChildren<TMP_Text>();
         _remainingText.SetText(_collectibles.Count.ToString());
         foreach (var collectible in _collectibles)
-            collectible.OnPickedUp += ItemWasCollected; 
+            collectible.OnPickedUp += ItemWasCollected;
     }
 
     public void ItemWasCollected()
@@ -30,10 +30,8 @@ public class Collector : MonoBehaviour
 
         _remainingText?.SetText(_countRemaining.ToString());
 
-        if (_countRemaining > 0)
-            return;
-
-        _onCollectionComplete.Invoke();
+        if (_countRemaining <= 0)
+            _onCollectionComplete.Invoke();
     }
 
     void OnValidate()

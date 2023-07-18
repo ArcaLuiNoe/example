@@ -25,7 +25,7 @@ public class Door : MonoBehaviour
 
     void Update()
     {
-        if (_open == false && Coin.coinsCollected >= _requiredCoins)
+        if (_open == false && Coin.coinsCollected >= _requiredCoins + 1)
             Open();
     }
 
