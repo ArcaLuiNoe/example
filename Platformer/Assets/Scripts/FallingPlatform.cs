@@ -11,14 +11,14 @@ public class FallingPlatform : MonoBehaviour
     [Range(0.005f, 0.1f)][SerializeField] float shakeX = 0.05f;
     [Range(0.005f, 0.1f)][SerializeField] float shakeY = 0.05f;
     [Tooltip("Reset the wiggle timer when no player is standing on the platform")]
-    [SerializeField] bool _resetOnEmpty;
 
     HashSet<Player> _playersInTrigger = new HashSet<Player>();
     Coroutine _coroutine;
     Vector3 _initialPosition;
+
     public bool PlayerInside;
 
-
+    bool _resetOnEmpty;
     bool _isFalling;
     float wiggleTimer = 0f;
     float fallTimer = 0f;

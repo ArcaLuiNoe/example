@@ -1,10 +1,10 @@
 ﻿using System;
+using System.Collections.Generic;
 using UnityEngine;
 
 public class Collectible : MonoBehaviour
 {
-     Collector _collector;
-     static int _countCollected = 1;
+    public event Action OnPickedUp;
 
     void OnTriggerEnter2D(Collider2D collision)
     {
@@ -13,10 +13,7 @@ public class Collectible : MonoBehaviour
             return;
         
         gameObject.SetActive(false);
-        _collector.ItemWasCollected(_countCollected++);
-    }
-    internal void SetCollector(Collector collector)
-    {
-        _collector = collector;
+
+        OnPickedUp?.Invoke();
     }
 }
